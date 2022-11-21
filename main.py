@@ -1,6 +1,13 @@
 import discord
 from discord.ext import commands
+from discord.utils import get
+from discord.guild import Guild
 from discord import DMChannel
+import json
+import asyncio
+import os.path
+from os import remove
+from time import sleep
 
 from config import settings, settings_db
 from mongo import get_id, get_points
@@ -90,7 +97,7 @@ class Button(discord.ui.View):
             await interaction.response.send_message(embed=embed, ephemeral=True)
             user = interaction.user
             for i in range(len(list_roles)):
-                role = role = discord.utils.get(
+                role = discord.utils.get(
                     user.guild.roles, name=list_roles[i])
                 await user.remove_roles(role)
 
@@ -100,9 +107,76 @@ intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=settings['prefix'], intents=intents)
 
 
+async def check_guild():
+    print('start thread check guild')
+    type_req = ''
+    name_guild = ''
+    user = ''
+    guild = bot.get_guild(695597338714177616)
+    while 1:
+        if os.path.exists('logs.json'):
+            print('file is exists')
+            with open('logs.json') as json_file:
+                data = json.load(json_file)
+                type_req = data['type_req']
+                if type_req == 'create':
+                    name_guild = data['name_guild']
+                    await guild.create_role(name=name_guild)
+                    admin_role = get(guild.roles, name=name_guild)
+                    user = get(
+                        guild.members, name=data['name'], discriminator=data['discr'])
+                    overwrites = {
+                        guild.default_role: discord.PermissionOverwrite(read_messages=False),
+                        admin_role: discord.PermissionOverwrite(
+                            read_messages=True)
+                    }
+                    await guild.create_text_channel(name_guild, overwrites=overwrites)
+                    await user.add_roles(admin_role)
+                elif type_req == 'delete':
+                    name_guild = data['name_guild']
+                    user = get(
+                        guild.members, name=data['name'], discriminator=data['discr'])
+                    try:
+                        channel = discord.utils.get(
+                            guild.channels, name=name_guild)
+                        role = get(guild.roles, name=name_guild)
+                        await channel.delete()
+                        await role.delete()
+                        print('Guild and roles is delete!')
+                    except:
+                        print('Guild or roles is not found')
+                elif type_req == 'add':
+                    name_guild = data['name_guild']
+                    try:
+                        user = get(
+                            guild.members, name=data['name'], discriminator=data['discr'])
+                        role = get(guild.roles, name=name_guild)
+                        await user.add_roles(role)
+                        print('User add to guilds')
+                    except:
+                        print('User or roles is not found')
+                elif type_req == 'remove':
+                    name_guild = data['name_guild']
+                    try:
+                        user = get(
+                            guild.members, name=data['name'], discriminator=data['discr'])
+                        role = get(guild.roles, name=name_guild)
+                        await user.remove_roles(role)
+                        print('User remove to guilds')
+                    except:
+                        print('User or guilds is not found')
+            remove('logs.json')
+            await asyncio.sleep(10)
+        else:
+            print('file is not exists')
+            await asyncio.sleep(15)
+
+
 @bot.event
 async def on_ready():
-    print('[*] Bot started')
+    print('[*] Bot started [*]')
+    loop = asyncio.get_event_loop()
+    loop.create_task(check_guild())
 
 
 @bot.command()
