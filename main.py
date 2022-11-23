@@ -168,9 +168,9 @@ async def check_guild():
                     new_name = data['new_name']
                     try:
                         channel = get(guild.channels, name=name_guild.lower())
-                        await channel.edit(name=new_name.lower())
                         role = get(guild.roles, name=name_guild)
                         await role.edit(name=new_name)
+                        await channel.edit(name=new_name.lower())
                         print('Guild is rename')
                     except:
                         print('Guild or roles is not found')
