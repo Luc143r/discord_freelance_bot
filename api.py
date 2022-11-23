@@ -18,13 +18,11 @@ async def create_guild(name_guild: str, name: str, discr: str):
     return {"method": "create_guild", "guild": dict_guilds}
 
 
-@app.get("/delete_guild&guild={name_guild}&name={name}&discr={discr}")
+@app.get("/delete_guild&guild={name_guild}")
 async def delete_guild(name_guild: str, name: str, discr: str):
     dict_guilds = {
         "type_req": "delete",
         "name_guild": name_guild,
-        "name": name,
-        "discr": discr
     }
     json_dump = json.dumps(dict_guilds, indent=4)
     with open("logs.json", "w") as json_file:
