@@ -167,7 +167,7 @@ async def check_guild():
                     name_guild = data['old_name']
                     new_name = data['new_name']
                     try:
-                        channel = get(guild.channels, name=name_guild)
+                        channel = get(guild.channels, name=name_guild.lower())
                         await channel.edit(name=new_name)
                         role = get(guild.roles, name=name_guild)
                         await role.edit(name=new_name)
