@@ -130,7 +130,7 @@ async def check_guild():
                         admin_role: discord.PermissionOverwrite(
                             read_messages=True)
                     }
-                    await guild.create_text_channel(name_guild, overwrites=overwrites)
+                    await guild.create_text_channel(name_guild.lower(), overwrites=overwrites)
                     await user.add_roles(admin_role)
                 elif type_req == 'delete':
                     name_guild = data['name_guild']
@@ -168,7 +168,7 @@ async def check_guild():
                     new_name = data['new_name']
                     try:
                         channel = get(guild.channels, name=name_guild.lower())
-                        await channel.edit(name=new_name)
+                        await channel.edit(name=new_name.lower())
                         role = get(guild.roles, name=name_guild)
                         await role.edit(name=new_name)
                         print('Guild is rename')
