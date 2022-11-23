@@ -19,7 +19,7 @@ async def create_guild(name_guild: str, name: str, discr: str):
 
 
 @app.get("/delete_guild&guild={name_guild}")
-async def delete_guild(name_guild: str, name: str, discr: str):
+async def delete_guild(name_guild: str):
     dict_guilds = {
         "type_req": "delete",
         "name_guild": name_guild
