@@ -22,7 +22,7 @@ async def create_guild(name_guild: str, name: str, discr: str):
 async def delete_guild(name_guild: str, name: str, discr: str):
     dict_guilds = {
         "type_req": "delete",
-        "name_guild": name_guild,
+        "name_guild": name_guild
     }
     json_dump = json.dumps(dict_guilds, indent=4)
     with open("logs.json", "w") as json_file:
