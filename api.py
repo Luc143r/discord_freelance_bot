@@ -58,3 +58,16 @@ async def del_user(name_guild: str, name: str, discr: str):
     with open("logs.json", "w") as json_file:
         json_file.write(json_dump)
     return {"method": "del_user", "guild": dict_guilds}
+
+
+@app.get("/rename_guild&old_name={old_name}&new_name={new_name}")
+async def rename_guild(old_name: str, new_name: str):
+    dict_guilds = {
+        "type_req": "rename",
+        "old_name": old_name,
+        "new_name": new_name
+    }
+    json_dump = json.dumps(dict_guilds, indent=4)
+    with open("logs.json", "w") as json_file:
+        json_file.write(json_dump)
+    return {"method": "rename_guild", "guild": dict_guilds}

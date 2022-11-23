@@ -165,10 +165,20 @@ async def check_guild():
                         print('User remove to guilds')
                     except:
                         print('User or guilds is not found')
+                elif type_req == 'rename':
+                    name_guild = data['old_name']
+                    new_name = data['new_name']
+                    try:
+                        channel = get(guild.channels, name=name_guild)
+                        await channel.edit(name=new_name)
+                        role = get(guild.roles, name=name_guild)
+                        await role.edit(name=new_name)
+                        print('Guild is rename')
+                    except:
+                        print('Guild or roles is not found')
             remove('logs.json')
             await asyncio.sleep(10)
         else:
-            print('file is not exists')
             await asyncio.sleep(15)
 
 
