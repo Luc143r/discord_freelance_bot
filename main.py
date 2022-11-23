@@ -134,11 +134,9 @@ async def check_guild():
                     await user.add_roles(admin_role)
                 elif type_req == 'delete':
                     name_guild = data['name_guild']
-                    user = get(
-                        guild.members, name=data['name'], discriminator=data['discr'])
                     try:
                         channel = discord.utils.get(
-                            guild.channels, name=name_guild)
+                            guild.channels, name=name_guild.lower())
                         role = get(guild.roles, name=name_guild)
                         await channel.delete()
                         await role.delete()
